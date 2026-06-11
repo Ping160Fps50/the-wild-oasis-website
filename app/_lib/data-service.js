@@ -1,6 +1,7 @@
 import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supabase";
+import { notFound } from "next/navigation";
 
 /////////////
 // GET
@@ -17,6 +18,7 @@ export async function getCabin(id) {
 
   if (error) {
     console.error(error);
+    notFound();
   }
 
   return data;
@@ -139,10 +141,15 @@ export async function getSettings() {
 export async function getCountries() {
   try {
     const res = await fetch(
-      "https://restcountries.com/v2/all?fields=name,flag",
+      "https://api.restcountries.com/countries/v5?response_fields=names.common,flag.emoji",
+      {
+        headers: {
+          Authorization: "Bearer rc_live_8bb72cd2222e4218b3bafb15a96b1c31",
+        },
+      },
     );
     const countries = await res.json();
-    return countries;
+    return countries.data.objects;
   } catch {
     throw new Error("Could not fetch countries");
   }
