@@ -12,7 +12,7 @@
     border-right-color: theme("colors.primary.200");
     animation: rotate 1s infinite linear;
     -webkit-animation: rotate 1s infinite linear;
-}
+  }
 
   .spinner-mini {
     margin: 0;
