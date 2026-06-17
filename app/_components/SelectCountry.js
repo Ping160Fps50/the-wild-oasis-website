@@ -6,7 +6,7 @@ async function SelectCountry({ defaultCountry, name, id, className }) {
   const countries = await getCountries();
   const editedCountries = countries.map((country) => ({
     name: country.names.common,
-    flag: country.flag.emoji,
+    flag: country.flag.url_svg,
   }));
 
   const flag =
