@@ -2,6 +2,7 @@ import { eachDayOfInterval } from "date-fns";
 
 import { supabase } from "./supabase";
 import { notFound } from "next/navigation";
+import { cacheLife } from "next/cache";
 
 /////////////
 // GET
@@ -139,6 +140,9 @@ export async function getSettings() {
 }
 
 export async function getCountries() {
+  "use cache";
+  cacheLife({ revalidate: 86400 });
+
   try {
     const res = await fetch(
       "https://api.restcountries.com/countries/v5?region=Europe&limit=30&response_fields=names.common,flag.url_svg",

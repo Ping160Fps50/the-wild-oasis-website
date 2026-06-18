@@ -1,10 +1,10 @@
-import { auth } from "@/app/_lib/auth";
+import { Suspense } from "react";
 
 import Link from "next/link";
+import GuestArea from "./GuestArea";
+import SpinnerMini from "./SpinnerMini";
 
-export default async function Navigation() {
-  const session = await auth();
-
+export default function Navigation() {
   return (
     <nav className="z-10 text-xl">
       <ul className="flex gap-16 items-center">
@@ -24,29 +24,9 @@ export default async function Navigation() {
             About
           </Link>
         </li>
-        <li>
-          {session?.user.image ? (
-            <Link
-              href="/account"
-              className="hover:text-accent-400 transition-colors flex items-center gap-4"
-            >
-              <img
-                src={session.user.image}
-                className="h-8 rounded-full"
-                alt={session.user.name}
-                referrerPolicy="no-referrer"
-              />
-              <span>Guest area</span>
-            </Link>
-          ) : (
-            <Link
-              href="/account"
-              className="hover:text-accent-400 transition-colors"
-            >
-              <span>Guest area</span>
-            </Link>
-          )}
-        </li>
+        <Suspense fallback={<SpinnerMini />}>
+          <GuestArea />
+        </Suspense>
       </ul>
     </nav>
   );

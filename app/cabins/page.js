@@ -1,19 +1,16 @@
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 
 import CabinList from "@/app/_components/CabinList";
 import Spinner from "@/app/_components/Spinner";
 import Filter from "@/app/_components/Filter";
 import ReservationReminder from "@/app/_components/ReservationReminder";
 
-// export const revalidate = 3600;
-
 export const metadata = {
   title: "Cabins",
 };
 
-export default async function Page({ searchParams }) {
-  const searchParameter = await searchParams;
-  const filter = searchParameter?.capacity ?? "all";
+export default function Page({ searchParams }) {
+  const filter = use(searchParams).capacity ?? "all";
 
   return (
     <div>
@@ -34,9 +31,9 @@ export default async function Page({ searchParams }) {
       </div>
 
       <Suspense fallback={<Spinner />} key={filter}>
-        <CabinList filter={filter} />
-        <ReservationReminder />
+        <CabinList searchParams={searchParams} />
       </Suspense>
+      <ReservationReminder />
     </div>
   );
 }

@@ -10,6 +10,7 @@ const nextConfig = {
       },
     ],
   },
+  cacheComponents: true,
   // output: "export",
 };
 

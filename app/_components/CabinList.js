@@ -1,10 +1,12 @@
-// import { unstable_noStore as noStore } from "next/cache";
+import { unstable_noStore as noStore } from "next/cache";
 import { getCabins } from "../_lib/data-service";
 
 import CabinCard from "@/app/_components/CabinCard";
 
-export default async function CabinList({ filter }) {
+export default async function CabinList({ searchParams }) {
   // noStore();
+  const searchParameter = await searchParams;
+  const filter = searchParameter?.capacity ?? "all";
   const cabins = await getCabins();
 
   if (!cabins) return null;

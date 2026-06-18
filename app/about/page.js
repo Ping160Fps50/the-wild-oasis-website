@@ -3,15 +3,22 @@ import { getCabins } from "../_lib/data-service";
 import Image from "next/image";
 
 import aboutImage1 from "@/public/about-1.jpg";
-
-export const revalidate = 86400;
+import { cacheLife } from "next/cache";
 
 export const metadata = {
   title: "About",
 };
 
+export async function getNumberOfCabins() {
+  "use cache";
+  cacheLife({ revalidate: 86400 });
+
+  const cabins = await getCabins();
+  return cabins.length;
+}
+
 export default async function Page() {
-  const numberOfCabins = (await getCabins()).length;
+  const numberOfCabins = await getNumberOfCabins();
 
   return (
     <div className="grid grid-cols-5 gap-x-24 gap-y-32 text-lg items-center">

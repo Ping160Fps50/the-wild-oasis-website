@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
 import { getBookings } from "./data-service";
+import { redirect } from "next/navigation";
 
 export async function updateGuest(formData) {
   const session = await auth();
@@ -46,6 +47,35 @@ export async function deleteReservation(bookingId) {
   }
 
   revalidatePath("/account/reservations");
+}
+
+export async function updateBookingAction(formData) {
+  const bookingId = +formData.get("bookingId");
+
+  const session = await auth();
+  if (!session.user) throw new Error("You Must Be Logged In!");
+
+  const guestBookings = await getBookings(session.user.guestId);
+  const guestBookingIds = guestBookings.map((booking) => booking.id);
+
+  if (!guestBookingIds.includes(bookingId))
+    throw new Error("Your Not Allowed To Update This Booking!");
+
+  const updatedFields = {
+    observations: formData.get("observations").slice(0, 1000),
+    numGuests: +formData.get("numGuests"),
+  };
+
+  const { error } = await supabase
+    .from("bookings")
+    .update(updatedFields)
+    .eq("id", bookingId)
+    .select()
+    .single();
+
+  if (error) throw new Error("Booking could not be updated");
+
+  redirect("/account/reservations");
 }
 
 export async function signInAction() {
